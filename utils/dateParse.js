@@ -1,12 +1,12 @@
 module.exports = (target,fmt) => { //author: meizz 
     var o = {
-        "M+": target.getMonth() + 1, //月份 
-        "d+": target.getDate(), //日 
-        "h+": target.getHours(), //小时 
-        "m+": target.getMinutes(), //分 
-        "s+": target.getSeconds(), //秒 
-        "q+": Math.floor((target.getMonth() + 3) / 3), //季度 
-        "S": target.getMilliseconds() //毫秒 
+        "M+": target.getMonth() + 1, // month
+        "d+": target.getDate(), //day 
+        "h+": target.getHours(), //hour 
+        "m+": target.getMinutes(), // minute 
+        "s+": target.getSeconds(), // second 
+        "q+": Math.floor((target.getMonth() + 3) / 3), // season 
+        "S": target.getMilliseconds() // millisecond
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (target.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o)

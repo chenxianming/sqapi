@@ -35,7 +35,6 @@ const onListening = () => {
 }
 
 // run
-
 let port = ~~(config.port || '3000');
 app.set('port', port);
 

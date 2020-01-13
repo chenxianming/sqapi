@@ -6,8 +6,7 @@ const implement = () => {
 
 const automaticTask = async () => {
     implement();
+    setTimeout(automaticTask, delay);
 }
-
-setTimeout(automaticTask, delay);
 
 module.exports = automaticTask;

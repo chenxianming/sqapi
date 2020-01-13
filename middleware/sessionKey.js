@@ -78,7 +78,7 @@ const csrf = function (req, res, next) {
     
     if (cerToken != sessionToken) {
         return res.json({
-            msg: 'invialid token',
+            errMsg: 'invalid token',
             key: req.session.key
         });
     }
@@ -87,7 +87,7 @@ const csrf = function (req, res, next) {
     
     if( ( ( new Date().getTime() - timestamp ) / 1000 / 60 ) > config.tokenExpireTime ){
         return res.json({
-            msg:'token was expired, please try again.',
+            errMsg:'token was expired, please try again.',
             key: req.session.key
         });
     }

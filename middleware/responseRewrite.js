@@ -139,10 +139,10 @@ function send(body) {
 
 
 function json(obj) {
-    
     const req = this.req;
     req.csrfToken();
     obj['key'] = req.session.key;
+    obj['timestamp'] = ( ( new Date() ).getTime() - req.session.startTime ) + ' (ms)';
     
     var val = obj;
     

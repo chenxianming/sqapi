@@ -4,10 +4,10 @@
 .DS_Store
 
 # LOGS
-logs/
+logs/*
 
 # Docs
-htdocs/
+htdocs/*
 
 # Xcode
 #

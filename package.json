@@ -1,0 +1,21 @@
+{
+    "name": "sqapi",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node ./run.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cookie-parser": "~1.4.3",
+        "express": "^4.17.1",
+        "express-rate-limit": "^5.0.0",
+        "express-session": "^1.17.0",
+        "remote-ip": "^1.0.1",
+        "uuid": "^3.3.3"
+    }
+}

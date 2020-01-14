@@ -16,6 +16,7 @@
         "express-rate-limit": "^5.0.0",
         "express-session": "^1.17.0",
         "inflection": "^1.12.0",
+        "obj2array": "^1.0.2",
         "protobufjs": "^6.8.8",
         "remote-ip": "^1.0.1",
         "uuid": "^3.3.3",

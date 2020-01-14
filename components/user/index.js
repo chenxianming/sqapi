@@ -7,24 +7,32 @@ const service = require('./service')();
 const fn = require('./fn');
 const api = require('./api');
 
-const protoEncoder = require('../../utils/encodeProto');
+// defined utils
 const protoDecoder = require('../../utils/decodeProto');
 
-const indexProtobufMiddle = new protoDecoder({
+const indexProtobuf = new protoDecoder({
     json: require('./jsonExamples/login.json'),
     typeName: 'Index'
 });
 
+// defined middleware
+const xssFilter = require('../../middleware/xssFilter');
+
+
+// GET ROUTER =========================
 // any middleware here
 // router.get('/', loginCheck);
 
 router.get('/', fn.index);
 
 
-router.post('/', indexProtobufMiddle.middleware); // decode protobuf array to data
+// POST ROUTER ========================
+router.post('/', indexProtobuf.middleware); // decode protobuf array to data
+router.post('/', xssFilter); // xss filter
 
 // any middleware here
 // router.post('/', senstifyWord);
+
 router.post('/', api.index);
 
 module.exports = router;

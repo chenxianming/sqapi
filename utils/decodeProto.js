@@ -5,7 +5,7 @@ const Json2proto = require("./json2proto");
 class DecodeProto {
     constructor(props) {
         this.json = props.json;
-        this.typeName = props.typeName;
+        this.typeName = props.typeName || 'Message';
 
         try {
             this.proto = this.json2proto().proto;
@@ -56,7 +56,7 @@ class DecodeProto {
     json2proto() {
         return new Json2proto({
             json: this.json,
-            typeName: 'Index'
+            typeName: this.typeName
         });
     }
 }

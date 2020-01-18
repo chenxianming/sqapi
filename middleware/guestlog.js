@@ -10,7 +10,7 @@ const guestInfo = (req, res, next) => {
 
         let ip = getIp(req).replace(/f/g, '');
         ip = ip.replace(/\:/g, '');
-        
+
         let url = req.url,
             method = req.method,
             date = (dateParse(new Date(), 'yyyy-MM-dd hh:mm:ss'));

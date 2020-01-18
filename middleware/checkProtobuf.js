@@ -13,9 +13,9 @@ module.exports = function (req, res, next) {
     try{
         let json = JSON.parse( req.body.protoBuf );
     }catch(e){
-        return {
+        return res.json({
             errMsg: 'invalid protoBuf format'
-        }
+        });
     }
     
     next();

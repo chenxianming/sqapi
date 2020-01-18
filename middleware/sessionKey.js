@@ -52,7 +52,7 @@ const decodeTimeStamp = (key, mapPramas) => {
 }
 
 const csrf = function (req, res, next) {
-
+    
     const cerToken = req.body['token'] || req.headers['token'] || null,
         cerKey = req.body['key'] || req.headers['key'] || null;
     
@@ -76,7 +76,7 @@ const csrf = function (req, res, next) {
         return token;
     }
     
-    if (cerToken != sessionToken) {
+    if ( ( cerToken != sessionToken ) && ( cerToken != null ) ) {
         return res.json({
             errMsg: 'invalid token',
             key: req.session.key

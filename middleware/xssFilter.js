@@ -1,21 +1,30 @@
 const xss = require('xss');
-const obj2array = require('obj2array');
+const obj2array = require('../utils/obj2array');
+const jsonParser = obj2array.jsonParser;
 
 module.exports = function(req,res,next){
-    
     let data = req.body.data || null;
     
     if( !data ){
         return next();
     }
     
-    obj2array(data, function (val, idx) {
+    jsonParser(data, function (val, idx) {
         // map each value and replace to xss security value
-        let str = typeof val === 'string',
-            value = str ? `"${ xss( val ) }"` : xss( val );
-            
-        eval( `req.body.data${ idx } = ${ value }` );
+        
+        if( ( typeof( val ) != 'string' ) ){
+            return ;
+        }
+        
+        if( !val ){
+            return ;
+        }
+        
+        let value = xss( val );
+        eval( `req.body.data${ idx } = "${ value }";` );
     });
+    
+    obj2array.reset();
 
     next();
     

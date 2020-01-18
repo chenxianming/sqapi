@@ -12,7 +12,7 @@ const protoDecoder = require('../../utils/decodeProto');
 
 const indexProtobuf = new protoDecoder({
     json: require('./jsonExamples/login.json'),
-    typeName: 'Index'
+    typeName: 'Login' // attention the typename
 });
 
 // defined middleware

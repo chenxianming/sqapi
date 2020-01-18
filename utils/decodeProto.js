@@ -35,6 +35,14 @@ class DecodeProto {
         
         let protoBuf = req.body['protoBuf'] || req.headers['protoBuf'];
         
+        try{
+            JSON.parse( protoBuf );
+        }catch(e){
+            return res.json({
+                errMsg: 'invalid protobuf format'
+            });
+        }
+        
         let json = JSON.parse( protoBuf );
         
         let arr = json.map( a => a * 1 );
@@ -43,8 +51,10 @@ class DecodeProto {
         
         try{
             let obj = this.proto.toObject( this.proto.decode( buf ) );
+            
             req.body.data = obj;
         }catch(e){
+            
             return res.json({
                 errMsg: 'invalid protobuf format'
             });

@@ -17,6 +17,7 @@ const customHeaders = require('./middleware/customHeaders');
 const responseRewrite = require('./middleware/responseRewrite');
 const sessionKey = require('./middleware/sessionKey');
 const checkProtobuf = require('./middleware/checkProtobuf');
+const checkPath = require('./middleware/checkPath');
 
 
 // =================================================
@@ -62,6 +63,7 @@ app.enable("trust proxy");
 app.use(startTime);
 app.use(limiter);
 app.use(customHeaders);
+app.use(checkPath);
 app.use(responseRewrite);
 app.use(sessionKey);
 app.use(checkProtobuf);
@@ -75,11 +77,6 @@ app.use('/', user);
 
 
 // err middleware
-app.use(function (req, res, next) {
-    let err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="proto, protobuf, protocolbuffer, convert" />
+    <meta name="description" content="build your rest api with csrf, token, xss and protobuf transfer" />
+    <title>SQApi - build your rest api with csrf, token, xss and protobuf transfer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        body {
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 30px;
+        }
+
+        p {
+            color: #666;
+            font-size: 12px;
+            line-height: 20px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            display: block;
+            width: 180px;
+            height: 20px;
+            padding: 10px;
+            border: 1px solid #666;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        button {
+            display: block;
+            width: 100px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background: #eee;
+            outline: 0;
+            cursor: pointer;
+            border: none;
+        }
+
+        #logs {
+            width: 500px;
+            height: 300px;
+            overflow: hidden;
+            padding: 20px;
+            border: 1px solid #666;
+            margin-top: 20px;
+        }
+
+        #logs .textarea {
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: 500px;
+            height: 300px;
+            border: none;
+        }
+
+        #logs .textarea p {
+            margin-bottom: 0;
+        }
+
+        #logs .textarea b {
+            color: #ff7f3e;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>SQ Api</h2>
+    <p>
+        SQ Api( <b>Security restful api</b> ) build your api server fastly and with csrf, token verify, xss filter and protobuf transfer.
+    </p>
+    <div id="form">
+        <input id="username" placeholder="username" />
+        <input id="password" placeholder="password" />
+        <input id="captcha" placeholder="captcha" />
+        <button>Submit</button>
+    </div>
+    <div id="logs">
+        <div class="textarea">
+            <div class="textareawrap">
+
+            </div>
+        </div>
+    </div>
+    <script src="./protobuf.min.js"></script>
+    <script src="./json2proto-es5.js"></script>
+    <script>
+        var token, key;
+
+        var button = document.querySelectorAll('button')[0];
+
+        var postJsonExample = {
+                "username": "user",
+                "password": 12345678,
+                "captcha": "Abcd"
+            },
+            receiveJsonExample = {
+                "result": true,
+                "status": 200,
+                "errMsg": "invalid password"
+            };
+
+        function Log(str) {
+            var str = ((typeof(str) == 'string') ? str : str.toString()) || '',
+                logs = document.querySelector('#logs .textareawrap'),
+                scrollHeight;
+
+            var paragraph = document.createElement('p');
+            paragraph.innerHTML = str;
+
+            logs.appendChild(paragraph);
+
+            scrollHeight = logs.clientHeight;
+            document.querySelector('#logs .textarea').scroll({
+                top: scrollHeight + 1000,
+                left: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function protobufEncoder(typeName, exampleJSON, data) {
+
+            var result = {};
+
+            try {
+                new Json2proto({
+                    json: exampleJSON
+                });
+                JSON.stringify(data);
+            } catch (e) {
+                alert('Invalid json format');
+                return result = false;
+            }
+
+            var TypeName = typeName || 'Message',
+                test = new Json2proto({
+                    json: exampleJSON, // use postJsonExample for passed template
+                    typeName: TypeName
+                });
+
+            var root = protobuf.parse(test.proto).root,
+                proto = root.lookupType(TypeName);
+
+            var buf = proto.encode(data).finish();
+
+            return {
+                protoBuf: '[' + buf.toString() + ']', //send this format for application/x-www-form-urlencoded type
+            };
+        }
+
+        function protobufDecoder(typeName, exampleJSON, data) {
+            var result = {};
+
+            try {
+                new Json2proto({
+                    json: exampleJSON
+                });
+                JSON.stringify(data);
+            } catch (e) {
+                alert('Invalid json format');
+                return result = false;
+            }
+
+            var TypeName = typeName || 'Message',
+                test = new Json2proto({
+                    json: exampleJSON, // use postJsonExample for passed template
+                    typeName: TypeName
+                });
+
+            var root = protobuf.parse(test.proto).root,
+                proto = root.lookupType(TypeName);
+
+            var arr = [];
+
+            for (var i = 0; i < data.length; i++) {
+                arr.push(data[i] * 1);
+            }
+
+            var buf = new Uint8Array(arr),
+                result = proto.toObject(proto.decode(buf));
+
+            return {
+                data: result
+            }
+        }
+
+        function submit(e) {
+            e.preventDefault();
+
+            var username = document.getElementById('username').value,
+                password = document.getElementById('password').value,
+                captcha = document.getElementById('captcha').value;
+
+            var post = {
+                username: username,
+                password: password,
+                captcha: captcha
+            };
+
+            var preData = protobufEncoder('Login', postJsonExample, post); // encode your post data to protobuf, attention the typename
+
+            Log('Decode post data ==> <br /><b>' + JSON.stringify(post) + '</b> to <br /><b>' + JSON.stringify(preData) + '</b> <br />and post to server<br /><br />');
+
+            preData.key = key;
+            preData.token = token;
+
+            postFn('/', preData, function(data) {
+                token = data.key.token;
+                key = data.key.key;
+
+                Log('Received data <br /><b>' + JSON.stringify(data) + ' </b><br /><br />');
+
+                // protobufDecoder
+                var decodeResult = protobufDecoder('Response', receiveJsonExample, data.protoBuf);
+                
+                Log('Decode protobuf to data ==> <br /> <b>' + JSON.stringify(decodeResult) + '</b><br /><br />');
+            });
+
+        }
+
+        function init() {
+            // get token and key at any gate
+            postFn('/', function(data) {
+                token = data.key.token;
+                key = data.key.key;
+                Log('Initial demo and set key = <b>' + key + '</b> token = <b>' + token + '</b><br /><br />');
+            });
+        }
+
+        function simpleParser(obj) {
+            var str = '',
+                keys = Object.keys(obj);
+
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+
+                str += (key + '=' + obj[key] + ((i == keys.length - 1) ? '' : '&'));
+            }
+
+            return str;
+        }
+
+        function postFn(url, data, callback) {
+
+            var args = arguments;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            xhr.send(simpleParser(data));
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    (typeof(args[args.length - 1]) == 'function') && (args[args.length - 1](JSON.parse(xhr.responseText)));
+                }
+            }
+        }
+
+        button.addEventListener('click', submit, false);
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

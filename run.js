@@ -32,6 +32,8 @@ const onError = (error) => {
 const onListening = () => {
     let addr = server.address();
     console.log('Listening on localhost:' + addr.port);
+    console.log('We really recommend use pm2 run this server.');
+    console.log('Edit ./config.json to configure the server.');
 }
 
 // run

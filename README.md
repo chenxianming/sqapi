@@ -1,5 +1,5 @@
 # sqapi
-Security restful api frame with csrf, xss, token and protobuf encode.
+Security restful api frameworks with csrf, xss, token and protobuf encode.
 
 It was beta version, cli and docs building now.
 

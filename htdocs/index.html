@@ -189,9 +189,6 @@
                 proto = root.lookupType(TypeName);
 
             var arr = [];
-            if( !data ){
-                console.log('u need refresh when server running 1st time, session not found on ram.');
-            }
             
             for (var i = 0; i < data.length; i++) {
                 arr.push(data[i] * 1);
@@ -226,6 +223,13 @@
             preData.token = token;
 
             postFn('/', preData, function(data) {
+                
+				if( !data ){
+                    var errMsg = 'u need refresh when server running 1st time session not found on ram, or cookie was expired.';
+                    alert( errMsg );
+                    return console.log( errMsg );
+				}
+                
                 token = data.key.token;
                 key = data.key.key;
 

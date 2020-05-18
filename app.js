@@ -63,7 +63,6 @@ app.enable("trust proxy");
 app.use(startTime);
 app.use(limiter);
 app.use(customHeaders);
-app.use(checkPath);
 app.use(responseRewrite);
 app.use(sessionKey);
 app.use(checkProtobuf);
@@ -75,8 +74,8 @@ app.use(appendToLog);
 // bind route handles here
 app.use('/', user);
 
-
 // err middleware
+app.use(checkPath); //check 404 event after routers binded
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

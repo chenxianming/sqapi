@@ -14,4 +14,4 @@ npm start
     
 ```
 
-- *For get method, pass token, key and Content-Type params at headers
+- *For get method, pass token, key and Content-Type params into headers

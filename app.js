@@ -17,7 +17,7 @@ const customHeaders = require('./middleware/customHeaders');
 const responseRewrite = require('./middleware/responseRewrite');
 const sessionKey = require('./middleware/sessionKey');
 const checkProtobuf = require('./middleware/checkProtobuf');
-const checkPath = require('./middleware/checkPath');
+const checkPath = require('./middleware/checkpath');
 
 
 // =================================================
